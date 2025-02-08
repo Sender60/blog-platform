@@ -1,0 +1,27 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "node": true
+  },
+  "extends": ["airbnb"],
+  "rules": {
+    "linebreak-style": "off",
+    "react/prop-types": "off",
+    "react/function-component-definition": "off",
+    "object-curly-newline": "off",
+    "multiline-ternary": "off",
+    "operator-linebreak": "off",
+    "jsx-a11y/label-has-associated-control": "off",
+    "react/jsx-one-expression-per-line": "off",
+    "max-len": [
+      "error",
+      140,
+      {
+        "ignoreComments": true,
+        "ignoreStrings": true,
+        "ignoreTemplateLiterals": true
+      }
+    ]
+  }
+}
