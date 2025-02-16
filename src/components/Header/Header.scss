@@ -1,3 +1,5 @@
+@import '../../variables.scss';
+
 .header {
   height: 80px;
   background-color: white;
@@ -5,6 +7,14 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 30px;
+
+  &__logo {
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 
   &__authorization {
     display: flex;
@@ -23,9 +33,9 @@
       font-size: 14px;
       font-weight: 500;
       cursor: pointer;
-      border: 1px solid lightgreen;
+      border: 1px solid $button-green;
       border-radius: 5px;
-      color: lightgreen;
+      color: $button-green;
       padding: 5px 10px;
 
       &:active {
