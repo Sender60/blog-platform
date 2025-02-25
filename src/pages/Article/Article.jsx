@@ -9,7 +9,6 @@ import { useGetArticleQuery } from '../../redux/api';
 const Article = () => {
   const { slug } = useParams();
   const { data, isLoading, error } = useGetArticleQuery(slug);
-  console.log(data);
 
   if (isLoading) {
     return <div>Loading...</div>;
