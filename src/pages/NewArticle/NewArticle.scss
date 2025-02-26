@@ -1,0 +1,44 @@
+@import '../../variables.scss';
+
+.new-article {
+  &-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+
+    &.tag {
+      width: 25%;
+      margin-right: 10px;
+    }
+  }
+  &-button {
+    background-color: $button-blue;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+
+    &.add {
+      border: 1px solid $button-blue;
+      background-color: $background-color;
+      color: $button-blue;
+    }
+    &.remove {
+      border: 1px solid $button-red;
+      background-color: $background-color;
+      color: $button-red;
+      margin-right: 10px;
+    }
+    &:active {
+      translate: 0 1px;
+    }
+  }
+}
+
+textarea {
+  resize: none;
+}

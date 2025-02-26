@@ -61,7 +61,6 @@ const UserForm = ({ fields, title }) => {
       } else if (title === 'Редактирование профиля') {
         res = await updateUserMutation(formData).unwrap();
       }
-      console.log('res', res);
 
       dispatch(
         setLogin({

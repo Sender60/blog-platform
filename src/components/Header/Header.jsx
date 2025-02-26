@@ -15,7 +15,6 @@ const Header = () => {
 
   useEffect(() => {
     if (!isLoading && !error && data) {
-      console.log(data);
       dispatch(setLogin(data));
     }
   }, [data, error, isLoading, dispatch]);
