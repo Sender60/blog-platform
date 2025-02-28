@@ -13,6 +13,12 @@
       width: 25%;
       margin-right: 10px;
     }
+
+    &-error {
+      display: block;
+      margin: -10px 0 10px 0;
+      color: red;
+    }
   }
   &-button {
     background-color: $button-blue;

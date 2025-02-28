@@ -1,15 +1,14 @@
 import React from 'react';
-import { v4 as uuidv4 } from 'uuid';
 
 const Tags = ({ tags, onAddTag, onRemoveTag, onChangeTag }) => (
   <div className="tags">
     <label>Tags</label>
     {tags.map((tag, index) => (
-      <div key={uuidv4()}>
+      <div key={tag.id}>
         <input
           className="new-article-input tag"
           type="text"
-          value={tag}
+          value={tag.text}
           onChange={(e) => onChangeTag(index, e.target.value)}
           placeholder="Tag"
         />

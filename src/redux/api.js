@@ -2,7 +2,16 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export const articleApi = createApi({
   reducerPath: 'articleApi',
-  baseQuery: fetchBaseQuery({ baseUrl: 'https://blog-platform.kata.academy/api/' }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: 'https://blog-platform.kata.academy/api/',
+    prepareHeaders: (headers) => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        headers.set('Authorization', `Bearer ${token}`);
+      }
+      return headers;
+    },
+  }),
   endpoints: (builder) => ({
     getArticles: builder.query({
       query: ({ limit, offset }) => ({
@@ -19,6 +28,13 @@ export const articleApi = createApi({
     }),
     getArticle: builder.query({
       query: (slug) => `articles/${slug}`,
+    }),
+    setArticle: builder.mutation({
+      query: (article) => ({
+        url: 'articles',
+        method: 'POST',
+        body: { article },
+      }),
     }),
   }),
 });
@@ -90,6 +106,6 @@ export const authApi = createApi({
   }),
 });
 
-export const { useGetArticlesQuery, useGetArticleQuery } = articleApi;
+export const { useGetArticlesQuery, useGetArticleQuery, useSetArticleMutation } = articleApi;
 
 export const { useLoginMutation, useRegisterMutation, useGetUserQuery, useUpdateUserMutation } = authApi;

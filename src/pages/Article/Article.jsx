@@ -4,11 +4,14 @@ import './Article.scss';
 import { format } from 'date-fns';
 import { useParams } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
+import { useSelector } from 'react-redux';
 import { useGetArticleQuery } from '../../redux/api';
 
 const Article = () => {
   const { slug } = useParams();
   const { data, isLoading, error } = useGetArticleQuery(slug);
+
+  const { username } = useSelector((state) => state.user);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -43,12 +46,16 @@ const Article = () => {
             <img className="article__header-user-avatar avatar" src={author.image} alt="avatar" />
           </div>
           <div>
-            <button className="article__header-delete" type="button">
-              Delete
-            </button>
-            <button className="article__header-edit" type="button">
-              Edit
-            </button>
+            {username === author.username && (
+              <>
+                <button className="article__header-delete" type="button">
+                  Delete
+                </button>
+                <button className="article__header-edit" type="button">
+                  Edit
+                </button>
+              </>
+            )}
           </div>
         </div>
       </div>
