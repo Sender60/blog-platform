@@ -2,14 +2,17 @@ import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import './Article.scss';
 import { format } from 'date-fns';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { useSelector } from 'react-redux';
-import { useGetArticleQuery } from '../../redux/api';
+import { Popconfirm } from 'antd';
+import { useGetArticleQuery, useDeleteArticleMutation } from '../../redux/api';
 
 const Article = () => {
   const { slug } = useParams();
+  const navigate = useNavigate();
   const { data, isLoading, error } = useGetArticleQuery(slug);
+  const [deleteArticle] = useDeleteArticleMutation(slug);
 
   const { username } = useSelector((state) => state.user);
 
@@ -21,6 +24,15 @@ const Article = () => {
   }
 
   const { title, description, body, createdAt, tagList, favoritesCount, author } = data.article;
+
+  const handleDelete = async () => {
+    try {
+      await deleteArticle(slug).unwrap();
+      navigate('/');
+    } catch (errorDelete) {
+      console.error('Error deleting article:', errorDelete);
+    }
+  };
 
   return (
     <div className="article">
@@ -48,10 +60,18 @@ const Article = () => {
           <div>
             {username === author.username && (
               <>
-                <button className="article__header-delete" type="button">
-                  Delete
-                </button>
-                <button className="article__header-edit" type="button">
+                <Popconfirm
+                  title="Are you sure you want to delete this article?"
+                  onConfirm={handleDelete}
+                  okText="Yes"
+                  cancelText="No"
+                  placement="right"
+                >
+                  <button className="article__header-delete" type="button">
+                    Delete
+                  </button>
+                </Popconfirm>
+                <button className="article__header-edit" type="button" onClick={() => navigate(`/article/${slug}/edit`)}>
                   Edit
                 </button>
               </>

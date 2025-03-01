@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Tags = ({ tags, onAddTag, onRemoveTag, onChangeTag }) => (
+const Tags = ({ tags = [], onAddTag, onRemoveTag, onChangeTag }) => (
   <div className="tags">
     <label>Tags</label>
     {tags.map((tag, index) => (

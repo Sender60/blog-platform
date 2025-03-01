@@ -1,42 +1,49 @@
-import React from 'react';
-import { Controller, useForm, useWatch } from 'react-hook-form';
+import React, { useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { useNavigate } from 'react-router-dom';
+import { useForm, Controller } from 'react-hook-form';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useUpdateArticleMutation, useGetArticleQuery } from '../../redux/api';
 import Tags from '../../components/Tags/Tags';
-import './NewArticle.scss';
-import { useSetArticleMutation } from '../../redux/api';
 
-const NewArticle = () => {
+const EditArticle = () => {
   const navigate = useNavigate();
+  const { slug: articleSlug } = useParams();
+  const [updateArticle] = useUpdateArticleMutation();
+
+  const { data: article, isLoading, refetch } = useGetArticleQuery(articleSlug);
+
   const {
     register,
     handleSubmit,
-    formState: { errors },
     control,
-  } = useForm({
-    defaultValues: {
-      title: '',
-      description: '',
-      body: '',
-      tagList: [{ id: uuidv4(), text: '' }],
-    },
-  });
+    formState: { errors },
+    reset,
+  } = useForm();
 
-  const [setArticle] = useSetArticleMutation();
-
-  const tagList = useWatch({ control, name: 'tagList' });
+  useEffect(() => {
+    if (article) {
+      reset({
+        title: article.article.title,
+        description: article.article.description,
+        body: article.article.body,
+        tagList: article.article.tagList.map((tag) => ({ id: uuidv4(), text: tag })),
+      });
+    }
+  }, [article, reset]);
 
   const onSubmit = async (data) => {
-    const tags = tagList.map((tag) => tag.text).filter((tag) => tag !== '');
+    const tags = data.tagList.map((tag) => tag.text).filter((tag) => tag !== '');
     const formData = { ...data, tagList: tags };
-    const response = await setArticle(formData).unwrap();
-    const { slug } = response.article;
-    navigate(`/article/${slug}`);
+    await updateArticle({ slug: articleSlug, article: formData }).unwrap();
+    await refetch();
+    navigate(`/article/${articleSlug}`);
   };
+
+  if (isLoading) return <div>Loading...</div>;
 
   return (
     <div className="article">
-      <h1>Create new article</h1>
+      <h1>Edit article</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <label htmlFor="title">
           Title
@@ -71,7 +78,7 @@ const NewArticle = () => {
           defaultValue={[{ id: uuidv4(), text: '' }]}
           render={({ field }) => (
             <Tags
-              tags={field.value}
+              tags={field.value && field.value.length > 0 ? field.value : [{ id: uuidv4(), text: '' }]}
               onAddTag={(index) => {
                 const newTags = [...field.value];
                 newTags.splice(index + 1, 0, { id: uuidv4(), text: '' });
@@ -98,4 +105,4 @@ const NewArticle = () => {
   );
 };
 
-export default NewArticle;
+export default EditArticle;

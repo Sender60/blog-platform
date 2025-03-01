@@ -36,6 +36,19 @@ export const articleApi = createApi({
         body: { article },
       }),
     }),
+    deleteArticle: builder.mutation({
+      query: (slug) => ({
+        url: `articles/${slug}`,
+        method: 'DELETE',
+      }),
+    }),
+    updateArticle: builder.mutation({
+      query: ({ slug, article }) => ({
+        url: `articles/${slug}`,
+        method: 'PUT',
+        body: { article },
+      }),
+    }),
   }),
 });
 
@@ -61,9 +74,7 @@ export const authApi = createApi({
       async onQueryStarted({ queryFulfilled }) {
         try {
           const result = await queryFulfilled;
-          console.log(result);
           if (result && result.data) {
-            console.log(result.data);
             localStorage.setItem('token', result.data.user.token);
           }
         } catch (error) {
@@ -106,6 +117,7 @@ export const authApi = createApi({
   }),
 });
 
-export const { useGetArticlesQuery, useGetArticleQuery, useSetArticleMutation } = articleApi;
+export const { useGetArticlesQuery, useGetArticleQuery, useSetArticleMutation, useDeleteArticleMutation, useUpdateArticleMutation } =
+  articleApi;
 
 export const { useLoginMutation, useRegisterMutation, useGetUserQuery, useUpdateUserMutation } = authApi;

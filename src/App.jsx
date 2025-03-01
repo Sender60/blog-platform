@@ -5,6 +5,7 @@ import ArticleList from './pages/ArticleList/ArticleList';
 import Article from './pages/Article/Article';
 import { RegisterForm, LoginForm, EditUserForm } from './pages/RegisterForm/RegisterForm';
 import NewArticle from './pages/NewArticle/NewArticle';
+import EditArticle from './pages/EditArticle/EditArticle';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <Routes>
         <Route path="/" element={<ArticleList />} />
         <Route path="/article/:slug" element={<Article />} />
+        <Route path="/article/:slug/edit" element={<EditArticle />} />
         <Route path="/sign-up" element={<RegisterForm />} />
         <Route path="/sign-in" element={<LoginForm />} />
         <Route path="/profile" element={<EditUserForm />} />
