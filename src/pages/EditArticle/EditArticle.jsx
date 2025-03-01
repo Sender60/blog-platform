@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { useForm, Controller } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { useUpdateArticleMutation, useGetArticleQuery } from '../../redux/api';
 import Tags from '../../components/Tags/Tags';
 
@@ -9,6 +10,8 @@ const EditArticle = () => {
   const navigate = useNavigate();
   const { slug: articleSlug } = useParams();
   const [updateArticle] = useUpdateArticleMutation();
+
+  const { username } = useSelector((state) => state.user);
 
   const { data: article, isLoading, refetch } = useGetArticleQuery(articleSlug);
 
@@ -19,6 +22,12 @@ const EditArticle = () => {
     formState: { errors },
     reset,
   } = useForm();
+
+  useEffect(() => {
+    if (article && article.article && username !== article.article.author.username) {
+      navigate('/');
+    }
+  }, [username, article, navigate]);
 
   useEffect(() => {
     if (article) {

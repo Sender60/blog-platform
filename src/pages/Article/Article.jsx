@@ -18,7 +18,7 @@ const Article = () => {
   const [setFavorite] = useSetFavoriteMutation(slug);
   const [deleteFavorite] = useDeleteFavoriteMutation(slug);
 
-  const { username } = useSelector((state) => state.user);
+  const { username, authorized } = useSelector((state) => state.user);
   const [isFavorited, setIsFavorited] = useState({ favorited: false, favoritesCount: 0 });
 
   useEffect(() => {
@@ -46,6 +46,10 @@ const Article = () => {
   };
 
   const handleFavorite = async (slugArticle) => {
+    if (!authorized) {
+      navigate('/sign-in');
+      return;
+    }
     if (!isFavorited.favorited) {
       try {
         await setFavorite(slugArticle).unwrap();

@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import './ArticleMini.scss';
 import { v4 as uuidv4 } from 'uuid';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import HeartSvg from '../HeartSvg/HeartSvg';
 import { useDeleteFavoriteMutation, useSetFavoriteMutation, useGetArticleQuery } from '../../redux/api';
 
 const ArticleMini = ({ id, article }) => {
+  const navigate = useNavigate();
   const { slug, title, description, createdAt, tagList, favorited, favoritesCount, author } = article;
+  const { authorized } = useSelector((state) => state.user);
 
   const { refetch } = useGetArticleQuery(slug);
 
@@ -21,6 +24,10 @@ const ArticleMini = ({ id, article }) => {
   }, [favorited, favoritesCount]);
 
   const handleFavorite = async (slugArticle) => {
+    if (!authorized) {
+      navigate('/sign-in');
+      return;
+    }
     if (!isFavorited.favorited) {
       try {
         await setFavorite(slugArticle).unwrap();
