@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import './Article.scss';
 import { format } from 'date-fns';
@@ -6,7 +6,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { useSelector } from 'react-redux';
 import { Popconfirm } from 'antd';
-import { useGetArticleQuery, useDeleteArticleMutation } from '../../redux/api';
+import { useGetArticleQuery, useDeleteArticleMutation, useSetFavoriteMutation, useDeleteFavoriteMutation } from '../../redux/api';
+import HeartSvg from '../../components/HeartSvg/HeartSvg';
 
 const Article = () => {
   const { slug } = useParams();
@@ -14,7 +15,17 @@ const Article = () => {
   const { data, isLoading, error } = useGetArticleQuery(slug);
   const [deleteArticle] = useDeleteArticleMutation(slug);
 
+  const [setFavorite] = useSetFavoriteMutation(slug);
+  const [deleteFavorite] = useDeleteFavoriteMutation(slug);
+
   const { username } = useSelector((state) => state.user);
+  const [isFavorited, setIsFavorited] = useState({ favorited: false, favoritesCount: 0 });
+
+  useEffect(() => {
+    if (data) {
+      setIsFavorited({ favorited: data.article.favorited, favoritesCount: data.article.favoritesCount });
+    }
+  }, [data]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -23,7 +34,7 @@ const Article = () => {
     return <div>Error</div>;
   }
 
-  const { title, description, body, createdAt, tagList, favoritesCount, author } = data.article;
+  const { title, description, body, createdAt, tagList, author } = data.article;
 
   const handleDelete = async () => {
     try {
@@ -34,13 +45,34 @@ const Article = () => {
     }
   };
 
+  const handleFavorite = async (slugArticle) => {
+    if (!isFavorited.favorited) {
+      try {
+        await setFavorite(slugArticle).unwrap();
+        setIsFavorited((prev) => ({ favorited: true, favoritesCount: prev.favoritesCount + 1 }));
+      } catch (errorSetFavorite) {
+        console.error('Error setting favorite:', errorSetFavorite);
+      }
+    } else {
+      try {
+        await deleteFavorite(slugArticle).unwrap();
+        setIsFavorited((prev) => ({ favorited: false, favoritesCount: prev.favoritesCount - 1 }));
+      } catch (errorDeleteFavorite) {
+        console.error('Error deleting favorite:', errorDeleteFavorite);
+      }
+    }
+  };
+
   return (
     <div className="article">
       <div className="article__header">
         <div className="article__header-title-box">
           <div>
             <h1 className="article__header-title">{title}</h1>
-            <span className="article__header-favorites-count">{favoritesCount}</span>
+            <button type="button" className="article__header-favorites-button" onClick={() => handleFavorite(slug)}>
+              <HeartSvg like={isFavorited.favorited} />
+              <span className="article__header-favorites-count">{isFavorited.favoritesCount}</span>
+            </button>
           </div>
           <div className="article__header-title-tags">
             {tagList.map((tag) => (

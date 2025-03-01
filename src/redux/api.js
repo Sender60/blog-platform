@@ -49,6 +49,18 @@ export const articleApi = createApi({
         body: { article },
       }),
     }),
+    setFavorite: builder.mutation({
+      query: (slug) => ({
+        url: `articles/${slug}/favorite`,
+        method: 'POST',
+      }),
+    }),
+    deleteFavorite: builder.mutation({
+      query: (slug) => ({
+        url: `articles/${slug}/favorite`,
+        method: 'DELETE',
+      }),
+    }),
   }),
 });
 
@@ -117,7 +129,14 @@ export const authApi = createApi({
   }),
 });
 
-export const { useGetArticlesQuery, useGetArticleQuery, useSetArticleMutation, useDeleteArticleMutation, useUpdateArticleMutation } =
-  articleApi;
+export const {
+  useGetArticlesQuery,
+  useGetArticleQuery,
+  useSetArticleMutation,
+  useDeleteArticleMutation,
+  useUpdateArticleMutation,
+  useSetFavoriteMutation,
+  useDeleteFavoriteMutation,
+} = articleApi;
 
 export const { useLoginMutation, useRegisterMutation, useGetUserQuery, useUpdateUserMutation } = authApi;
