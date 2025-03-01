@@ -4,10 +4,12 @@ import './ArticleMini.scss';
 import { v4 as uuidv4 } from 'uuid';
 import { Link } from 'react-router-dom';
 import HeartSvg from '../HeartSvg/HeartSvg';
-import { useDeleteFavoriteMutation, useSetFavoriteMutation } from '../../redux/api';
+import { useDeleteFavoriteMutation, useSetFavoriteMutation, useGetArticleQuery } from '../../redux/api';
 
 const ArticleMini = ({ id, article }) => {
   const { slug, title, description, createdAt, tagList, favorited, favoritesCount, author } = article;
+
+  const { refetch } = useGetArticleQuery(slug);
 
   const [isFavorited, setIsFavorited] = useState({ favorited, favoritesCount });
 
@@ -23,6 +25,7 @@ const ArticleMini = ({ id, article }) => {
       try {
         await setFavorite(slugArticle).unwrap();
         setIsFavorited((prev) => ({ favorited: true, favoritesCount: prev.favoritesCount + 1 }));
+        refetch();
       } catch (errorSetFavorite) {
         console.error('Error setting favorite:', errorSetFavorite);
       }
@@ -30,6 +33,7 @@ const ArticleMini = ({ id, article }) => {
       try {
         await deleteFavorite(slugArticle).unwrap();
         setIsFavorited((prev) => ({ favorited: false, favoritesCount: prev.favoritesCount - 1 }));
+        refetch();
       } catch (errorDeleteFavorite) {
         console.error('Error deleting favorite:', errorDeleteFavorite);
       }

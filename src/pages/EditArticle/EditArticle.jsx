@@ -98,7 +98,7 @@ const EditArticle = () => {
           )}
         />
         <button className="new-article-button" type="submit">
-          Create
+          Save
         </button>
       </form>
     </div>
