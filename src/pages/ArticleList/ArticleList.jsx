@@ -1,20 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { Pagination } from 'antd';
+import { useSearchParams } from 'react-router-dom';
 import ArticleMini from '../../components/ArticleMini/ArticleMini';
 import { useGetArticlesQuery } from '../../redux/api';
 
 const ArticleList = () => {
-  const [page, setPage] = useState(1);
-  const { data, isLoading, error, refetch } = useGetArticlesQuery({ limit: 6, offset: (page - 1) * 6 });
-
-  useEffect(() => {
-    refetch();
-  }, [page, refetch]);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialPage = Number(searchParams.get('page') || '1');
+  const [page, setPage] = useState(initialPage);
+  const { data, isLoading, error } = useGetArticlesQuery({ limit: 6, offset: (page - 1) * 6 });
 
   const handlePageChange = (newPage) => {
-    window.scrollTo(0, 0);
     setPage(newPage);
+    setSearchParams({ page: newPage });
+    window.scrollTo(0, 0);
   };
+
+  useEffect(() => {
+    setPage(initialPage);
+  }, [initialPage]);
 
   if (isLoading) return 'Loading...';
   if (error) return 'Error';
