@@ -1,15 +1,17 @@
-/* eslint-disable no-nested-ternary */
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import './UserForm.scss';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { Button } from 'antd';
 import { useRegisterMutation, useLoginMutation, useUpdateUserMutation } from '../../redux/api';
 import { setLogin } from '../../redux/reducers/userSlice';
 
 const UserForm = ({ fields, title }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const [fieldError, setFieldError] = useState({});
 
   const {
     register,
@@ -23,6 +25,20 @@ const UserForm = ({ fields, title }) => {
   const [registerMutation, { isLoading: isRegisterLoading, error: registerError }] = useRegisterMutation();
   const [loginMutation, { isLoading: isLoginLoading, error: loginError }] = useLoginMutation();
   const [updateUserMutation] = useUpdateUserMutation();
+
+  const serverFieldMapping = {
+    username: 'Имя пользователя',
+    email: 'Email',
+  };
+
+  const transformServerErrors = (serverErrors) =>
+    // eslint-disable-next-line implicit-arrow-linebreak
+    Object.entries(serverErrors).reduce((acc, [key, value]) => {
+      if (serverFieldMapping[key]) {
+        acc[serverFieldMapping[key]] = value;
+      }
+      return acc;
+    }, {});
 
   const onSubmit = async (data) => {
     let formData;
@@ -76,9 +92,48 @@ const UserForm = ({ fields, title }) => {
         localStorage.setItem('token', res.user.token);
       }
       navigate('/', { replace: true });
+      setFieldError({});
     } catch (error) {
       console.error(error);
+      if (title === 'Вход' && error.data.errors['email or password'] === 'is invalid') {
+        setFieldError({ email: 'Неправильный логин или пароль' });
+      }
+      if (title === 'Регистрация' && error.data.errors) {
+        setFieldError(transformServerErrors(error.data.errors));
+      }
     }
+  };
+
+  const getRegisterError = (rgsError) => {
+    if (rgsError.status === 500) {
+      return `Произошла внутренняя ошибка сервера: ${JSON.stringify(rgsError.data.errors)}`;
+    }
+    if (rgsError.data && rgsError.data.errors) {
+      if (rgsError.data.errors.username && rgsError.data.errors.email) {
+        return 'Пользователь с таким именем и почтовым адресом уже зарегистрирован';
+      }
+      return Object.entries(rgsError.data.errors)
+        .map(([field, message]) => {
+          if (field === 'username') return 'Пользователь с таким именем уже зарегистрирован';
+          if (field === 'email') return 'Пользователь с таким почтовым адресом уже зарегистрирован';
+          return message;
+        })
+        .join(' ');
+    }
+    return rgsError.message || 'Произошла ошибка';
+  };
+
+  const getLoginError = (lgError) => {
+    if (lgError.status === 500) {
+      return `Произошла внутренняя ошибка сервера: ${JSON.stringify(lgError.data.errors)}`;
+    }
+    if (lgError.data && lgError.data.errors) {
+      if (lgError.data.errors['email or password'] === 'is invalid') {
+        return 'Неправильный логин или пароль';
+      }
+      return Object.values(lgError.data.errors).join(', ');
+    }
+    return lgError.message || 'Произошла ошибка';
   };
 
   return (
@@ -108,7 +163,7 @@ const UserForm = ({ fields, title }) => {
               })}
               placeholder={field.placeholder}
               className="user-form__input"
-              style={errors && errors[field.name] ? { border: '1px solid red' } : {}}
+              style={fieldError[field.name] ? { border: '1px solid red' } : {}}
             />
             {errors && errors[field.name] && (
               <label className="user-form__error" htmlFor={field.name}>
@@ -123,25 +178,11 @@ const UserForm = ({ fields, title }) => {
             Согласие обработки персональных данных
           </label>
         )}
-        <button disabled={isRegisterLoading || isLoginLoading} type="submit">
+        <Button disabled={isRegisterLoading || isLoginLoading} htmlType="submit">
           Submit
-        </button>
+        </Button>
         {(registerError || loginError) && (
-          <label className="user-form__error">
-            {registerError && registerError.status === 500
-              ? `Произошла внутренняя ошибка сервера: ${JSON.stringify(registerError.data.errors)}`
-              : registerError && registerError.data && registerError.data.errors
-                ? Object.values(registerError.data.errors).join(', ')
-                : registerError && registerError.message
-                  ? registerError.message
-                  : loginError && loginError.status === 500
-                    ? `Произошла внутренняя ошибка сервера: ${JSON.stringify(loginError.data.errors)}`
-                    : loginError && loginError.data && loginError.data.errors
-                      ? Object.values(loginError.data.errors).join(', ')
-                      : loginError && loginError.message
-                        ? loginError.message
-                        : 'Произошла ошибка'}
-          </label>
+          <label className="user-form__error">{registerError ? getRegisterError(registerError) : getLoginError(loginError)}</label>
         )}
       </form>
     </div>

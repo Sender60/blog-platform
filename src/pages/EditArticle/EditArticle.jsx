@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { useForm, Controller } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { Button } from 'antd';
 import { useUpdateArticleMutation, useGetArticleQuery } from '../../redux/api';
 import Tags from '../../components/Tags/Tags';
 
@@ -106,9 +107,9 @@ const EditArticle = () => {
             />
           )}
         />
-        <button className="new-article-button" type="submit">
+        <Button htmlType="submit" type="primary" style={{ padding: '20px' }}>
           Save
-        </button>
+        </Button>
       </form>
     </div>
   );

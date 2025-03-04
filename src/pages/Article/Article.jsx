@@ -5,7 +5,7 @@ import { format } from 'date-fns';
 import { useParams, useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { useSelector } from 'react-redux';
-import { Popconfirm } from 'antd';
+import { Button, Popconfirm } from 'antd';
 import { useGetArticleQuery, useDeleteArticleMutation, useSetFavoriteMutation, useDeleteFavoriteMutation } from '../../redux/api';
 import HeartSvg from '../../components/HeartSvg/HeartSvg';
 
@@ -103,13 +103,18 @@ const Article = () => {
                   cancelText="No"
                   placement="right"
                 >
-                  <button className="article__header-delete" type="button">
+                  <Button variant="outlined" color="red" style={{ padding: '10px' }}>
                     Delete
-                  </button>
+                  </Button>
                 </Popconfirm>
-                <button className="article__header-edit" type="button" onClick={() => navigate(`/article/${slug}/edit`)}>
+                <Button
+                  variant="outlined"
+                  color="green"
+                  style={{ padding: '10px', marginLeft: '10px' }}
+                  onClick={() => navigate(`/article/${slug}/edit`)}
+                >
                   Edit
-                </button>
+                </Button>
               </>
             )}
           </div>

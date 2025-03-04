@@ -16,10 +16,16 @@
     margin-bottom: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
+    &--error {
+      border-color: red;
+    }
+
+    &:focus {
+      outline: none;
+    }
   }
   &__error {
     display: block;
-    margin: -10px 0 10px 0;
     color: red;
   }
 }

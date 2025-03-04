@@ -17,3 +17,11 @@ li {
   list-style-type: none;
   background-color: white;
 }
+
+.ant-btn:hover {
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.ant-btn:active {
+  transform: translateY(1px);
+}

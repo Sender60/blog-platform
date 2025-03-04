@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import './Header.scss';
+import { Button } from 'antd';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useGetUserQuery } from '../../redux/api';
@@ -32,14 +33,14 @@ const Header = () => {
       return (
         <>
           <Link to="/sign-in">
-            <button type="button" className="header__authorization-in">
+            <Button color="black" variant="text">
               Sign in
-            </button>
+            </Button>
           </Link>
           <Link to="/sign-up">
-            <button type="button" className="header__authorization-up">
+            <Button color="lime" variant="outlined" style={{ marginLeft: '10px' }}>
               Sign up
-            </button>
+            </Button>
           </Link>
         </>
       );
@@ -48,9 +49,9 @@ const Header = () => {
     return (
       <>
         <Link to="/new-article">
-          <button type="button" className="header__authorization-create">
+          <Button color="lime" variant="outlined">
             Create article
-          </button>
+          </Button>
         </Link>
         <Link to="/profile">
           <div className="header__authorization-user">
@@ -59,9 +60,9 @@ const Header = () => {
           </div>
         </Link>
         <Link to="/">
-          <button type="button" className="header__authorization-out" onClick={handleLogout}>
+          <Button style={{ border: '1px solid lightgrey', color: 'grey' }} variant="outlined" onClick={handleLogout}>
             Log out
-          </button>
+          </Button>
         </Link>
       </>
     );

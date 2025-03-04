@@ -1,3 +1,4 @@
+import { Button } from 'antd';
 import React from 'react';
 
 const Tags = ({ tags = [], onAddTag, onRemoveTag, onChangeTag }) => (
@@ -12,13 +13,13 @@ const Tags = ({ tags = [], onAddTag, onRemoveTag, onChangeTag }) => (
           onChange={(e) => onChangeTag(index, e.target.value)}
           placeholder="Tag"
         />
-        <button className="new-article-button remove" type="button" onClick={() => onRemoveTag(index)}>
+        <Button variant="outlined" color="red" style={{ padding: '20px', marginRight: '10px' }} onClick={() => onRemoveTag(index)}>
           Delete
-        </button>
+        </Button>
         {index === tags.length - 1 && (
-          <button className="new-article-button add" type="button" onClick={() => onAddTag(index)}>
+          <Button variant="outlined" color="primary" style={{ padding: '20px' }} onClick={() => onAddTag(index)}>
             Add
-          </button>
+          </Button>
         )}
       </div>
     ))}
