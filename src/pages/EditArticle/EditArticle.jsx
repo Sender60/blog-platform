@@ -16,6 +16,13 @@ const EditArticle = () => {
 
   const { data: article, isLoading, refetch } = useGetArticleQuery(articleSlug);
 
+  const validateNoOnlyProbels = (value) => {
+    if (typeof value !== 'string' || value == null) {
+      return false;
+    }
+    return value.trim() !== '';
+  };
+
   const {
     register,
     handleSubmit,
@@ -62,7 +69,7 @@ const EditArticle = () => {
             type="text"
             id="title"
             placeholder="Title"
-            {...register('title', { required: true, maxLength: 50 })}
+            {...register('title', { required: true, maxLength: 50, validate: validateNoOnlyProbels })}
           />
           {errors.title && <span className="new-article-input-error">Title is required</span>}
         </label>
@@ -73,13 +80,19 @@ const EditArticle = () => {
             type="text"
             id="description"
             placeholder="Title"
-            {...register('description', { required: true })}
+            {...register('description', { required: true, maxLength: 100, validate: validateNoOnlyProbels })}
           />
           {errors.description && <span className="new-article-input-error">Description is required</span>}
         </label>
         <label htmlFor="body">
           Body
-          <textarea className="new-article-input" type="text" id="body" placeholder="Text" {...register('body', { required: true })} />
+          <textarea
+            className="new-article-input"
+            type="text"
+            id="body"
+            placeholder="Text"
+            {...register('body', { required: true, validate: validateNoOnlyProbels })}
+          />
           {errors.body && <span className="new-article-input-error">Body is required</span>}
         </label>
         <Controller
@@ -102,7 +115,8 @@ const EditArticle = () => {
               onChangeTag={(index, value) => {
                 const newTags = [...field.value];
                 newTags[index].text = value;
-                field.onChange(newTags);
+                const filteredTags = newTags.filter((tag, i) => tag.text.trim() !== '' || i === newTags.length - 1);
+                field.onChange(filteredTags);
               }}
             />
           )}
