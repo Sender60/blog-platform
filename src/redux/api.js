@@ -12,6 +12,7 @@ export const articleApi = createApi({
       return headers;
     },
   }),
+  tagTypes: ['Articles'],
   endpoints: (builder) => ({
     getArticles: builder.query({
       query: ({ limit, offset }) => ({
@@ -21,6 +22,7 @@ export const articleApi = createApi({
           offset,
         },
       }),
+      providesTags: ['Articles'],
       transformResponse: (response) => ({
         articles: response.articles,
         articlesCount: response.articlesCount,
@@ -54,12 +56,14 @@ export const articleApi = createApi({
         url: `articles/${slug}/favorite`,
         method: 'POST',
       }),
+      invalidatesTags: ['Articles'],
     }),
     deleteFavorite: builder.mutation({
       query: (slug) => ({
         url: `articles/${slug}/favorite`,
         method: 'DELETE',
       }),
+      invalidatesTags: ['Articles'],
     }),
   }),
 });

@@ -2,6 +2,7 @@ import React from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
+import { Button } from 'antd';
 import Tags from '../../components/Tags/Tags';
 import './NewArticle.scss';
 import { useSetArticleMutation } from '../../redux/api';
@@ -90,9 +91,9 @@ const NewArticle = () => {
             />
           )}
         />
-        <button className="new-article-button" type="submit">
+        <Button htmlType="submit" type="primary" style={{ padding: '20px' }}>
           Create
-        </button>
+        </Button>
       </form>
     </div>
   );

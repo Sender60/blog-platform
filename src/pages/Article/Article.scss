@@ -57,30 +57,6 @@
       }
     }
 
-    &-delete {
-      cursor: pointer;
-      background-color: $background-color;
-      border: 1px solid $button-red;
-      border-radius: 5px;
-      color: $button-red;
-      padding: 5px 10px;
-      margin-right: 10px;
-      &:active {
-        translate: 0 1px;
-      }
-    }
-    &-edit {
-      cursor: pointer;
-      background-color: $background-color;
-      border: 1px solid $button-green;
-      border-radius: 5px;
-      color: $button-green;
-      padding: 5px 10px;
-      &:active {
-        translate: 0 1px;
-      }
-    }
-
     &-favorites-count {
       display: inline-block;
       transform: translate(3px, -3px);
